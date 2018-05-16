@@ -2,13 +2,13 @@
 
 from setuptools import setup
 
-setup(name='hdxcrawler',
+setup(name='ckaniterator',
       version='0.1',
-      description='Simple framework for crawling datasets on the Humanitarian Data Exchange',
+      description='Simple framework for iterating through CKAN datasets',
       author='David Megginson',
       author_email='contact@megginson.com',
-      url='https://github.com/davidmegginson/hdxcrawler',
+      url='https://github.com/davidmegginson/ckaniterator',
       install_requires=['ckanapi'],
-      packages=['hdxcrawler'],
+      packages=['ckaniterator'],
       test_suite='tests',
 )

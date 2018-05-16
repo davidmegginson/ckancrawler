@@ -1,5 +1,7 @@
-# Python library for crawling datasets on the Humanitarian Data Exchange (HDX)
+# Python library for iterating through CKAN packages
 
+This package allows you to iterator through CKAN packages/datasets
+Pythonically, with minimal code.
 
 ## Requirements
 
@@ -8,45 +10,35 @@ ckanapi package
 ## Simple usage
 
 ```
-import hdxcrawler
+from ckaniterator import CKANIterator
 
-def do_package(package):
-  print("Package: {}".format(package['name'])
+ckan = CKANIterator()
 
-def do_resource(package):
-  print("  Resource: {}".format(resource['name'])
-  
-crawler = hdxcrawler.Crawler(package_callback=do_package, resource_callback=do_resource)
-crawler.crawl('tags:3w')
-
+for package in ckan.packages('tags:demo'):
+    print(package['name'])
 ```
 
-## hdxcrawler.Crawler variables and methods
+## CKANIterator methods
 
+**__init__**(ckan_url='https://demo.ckan.org', apikey=None, user_agent=None, delay=1) - constructor
 
-**ckan** - the CKAN access object from the ckanapi
-
-**package_callback** - the function to call for each matching package: callback(package)
-
-**resource_callback** - the function to call for each resource in each
-matching package: callback(package, resource)
-
-**__init__**(package_callback=None, resource_callback=None,
-  ckan_url=None, apikey=None, user_agent=None) - constructor
-
-* package_callback - see variable above
-* resource_callback - see variable above
-* ckan_url - see variable above
+* ckan_url - the URL of the CKAN site to use
 * apikey - your personal CKAN API key, for non-anonymous access
   (e.g. if you plan to make changes to packages or resources)
 * user_agent - an HTTP user-agent string to pass to CKAN (usually not
   required)
+* delay - delay in seconds between each result (to give the server a
+  breath); defaults to 1
   
-**crawl**(query) - crawl through the matching packages, invoking the
+**packages**(query) - crawl through the matching packages, invoking the
   callbacks as needed
+* query - a CKAN search query (e.g. "tags:hxl"); defaults to None (all packages)
+* sort - a CKAN sorting specification (e.g. "relevance asc, metadata_modified desc"); defaults to None
+  (default sort)
   
-* query - a CKAN search query (e.g. "tags:hxl")
+**touch_package**(package)
 
+**update_package**(package)
 
 ## Sample HDX package
 
@@ -330,27 +322,5 @@ matching package: callback(package, resource)
     "pageviews_last_14_days": 9,
     "title": "UNHCR's populations of concern originating from Syria",
     "package_creator": "davidmegginson"
-}
-```
-
-## Sample HDX resource
-
-```
-{
-  "cache_last_updated": null,
-  "package_id": "e2d5566d-d755-40dd-a63f-d4d298a9df1d",
-  "datastore_active": false,
-  "id": "a125ca78-880b-4bcf-b368-70670f8ff49d",
-  "size": null,
-  "revision_last_updated": "2017-10-24T21:30:26.979086",
-  "state": "active",
-  "hash": "",
-  "description": "UNHCR persons of concern originating from Syria.",
-  "format": "CSV",
-  "hdx_rel_url": "http://proxy.hxlstandard.org/data.csv?url=http%3A//popstats.unhcr.org/en/persons_of_concern.hxl&filter01=select&select-query01-01=%23country%2Borigin=Syrian%20Arab%20Rep.",
-  "tracking_summary": {
-      "total": 28,
-      "recent": 1
-  }
 }
 ```
