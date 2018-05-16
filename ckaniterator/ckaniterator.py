@@ -18,14 +18,16 @@ class CKANIterator:
         self.delay = delay
         """Delay in seconds after each result (to give the server a break)"""
 
-    def packages(self, query=None, sort='relevance asc, metadata_modified desc'):
+    def packages(self, q=None, fq=None, sort=None):
         """Execute a query against HDX, and yield a result for each matching package.
         Pauses for \L{delay} after each operation.
-        @param query: a CKAN search query (e.g. "tags:hxl")
+        @param q: a CKAN search query (e.g. "population")
+        @param fq: a CKAN filter query (e.g. "tags:hxl")
+        @param sort: a CKAN sort specification (e.g. "relevance asc, metadata_modified desc")
         """
         start = 0
         while True:
-            result = self.ckan.action.package_search(fq=query, sort=sort, start=start, rows=CKANIterator.CHUNK_SIZE)
+            result = self.ckan.action.package_search(q=q, fq=fq, sort=sort, start=start, rows=CKANIterator.CHUNK_SIZE)
             result_count = len(result['results'])
             if result_count <= 0:
                 break
@@ -35,8 +37,5 @@ class CKANIterator:
                 time.sleep(self.delay)
             start += result_count
 
-    def touch(self, package):
-        """Convenience method to update only a package's date.
-        @param package: the package object to update.
-        """
-        pass
+    def update_package(self, package):
+        self.ckan.call_action('package_update', package)

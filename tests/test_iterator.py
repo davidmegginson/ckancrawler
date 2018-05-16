@@ -14,17 +14,17 @@ class TestCKANIterator(unittest.TestCase):
 
     def test_tag_query(self):
         """Search for a specific tag"""
-        self.assertValidResults('tags:demo')
+        self.assertValidResults(fq='tags:demo')
 
     def test_text_query(self):
         """Search for a text match"""
-        self.assertValidResults('demo')
+        self.assertValidResults(q='demo')
 
-    def assertValidResults(self, query=None, sort=None):
+    def assertValidResults(self, q=None, fq=None, sort=None):
         """Check that we have valid results for a query"""
         max_packages = 5 # enough to test
         seen_package = False
-        for i, package in enumerate(self.iterator.packages()):
+        for i, package in enumerate(self.iterator.packages(q=q, fq=fq, sort=sort)):
             seen_package = True
             self.assertTrue(package['name'] is not None)
             self.assertTrue(len(package['resources']) > 0)

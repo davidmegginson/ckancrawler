@@ -4,6 +4,6 @@ from . import CKANIterator
 
 iterator = CKANIterator()
 
-print("Demo: all packages from demo.ckan.org tagged \"demo\"")
-for package in iterator.packages('tags:demo'):
+print("Demo: all packages from demo.ckan.org matching 'demo'")
+for package in iterator.packages(q='demo'):
     print("  " + package['name'])
