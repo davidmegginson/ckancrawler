@@ -1,7 +1,7 @@
 # Python library for iterating through CKAN packages
 
 This package allows you to iterator through CKAN packages/datasets
-Pythonically, with minimal code.
+Pythonically, with minimal code. It is released into the Public Domain.
 
 ## Requirements
 
@@ -10,19 +10,22 @@ ckanapi package
 ## Simple usage
 
 ```
-from ckaniterator import CKANIterator
+from ckancrawler import Crawler
 
-ckan = CKANIterator()
+crawler = Crawler('https://data.humdata.org')
 
-for package in ckan.packages('tags:demo'):
+for package in crawler.packages(fq='tags:hxl'):
     print(package['name'])
 ```
 
-## CKANIterator methods
+## Crawler variables and methods
+
+**ckan** - (variable) the underlying ckanapi object
+_(Use this to perform operations on the data, per https://github.com/ckan/ckanapi)_
 
 **__init__**(ckan_url='https://demo.ckan.org', apikey=None, user_agent=None, delay=1) - constructor
 
-* ckan_url - the URL of the CKAN site to use
+* ckan_url - the URL of the CKAN site to use (defaults to https://demo.ckan.org)
 * apikey - your personal CKAN API key, for non-anonymous access
   (e.g. if you plan to make changes to packages or resources)
 * user_agent - an HTTP user-agent string to pass to CKAN (usually not
@@ -30,17 +33,18 @@ for package in ckan.packages('tags:demo'):
 * delay - delay in seconds between each result (to give the server a
   breath); defaults to 1
   
-**packages**(query) - crawl through the matching packages, invoking the
-  callbacks as needed
-* query - a CKAN search query (e.g. "tags:hxl"); defaults to None (all packages)
+**packages**(query) - return a generator (iterator) through matching packages
+* q - a CKAN search query (e.g. "education"); defaults to None (all packages)
+* fq - a CKAN filter query (e.g. "tags:hxl"); defaults to None (all packages)
 * sort - a CKAN sorting specification (e.g. "relevance asc, metadata_modified desc"); defaults to None
   (default sort)
   
-**touch_package**(package)
+## Sample CKAN package
 
-**update_package**(package)
+The following is a sample package from the
+[Humanitarian Data Exchange](https://data.humdata.org) (HDX), showing
+typical fields available in a package/dataset object:
 
-## Sample HDX package
 
 ```
 {

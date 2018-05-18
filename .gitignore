@@ -1,4 +1,3 @@
 *.pyc
-/.eggs
-/ckaniterator.egg-info
-/hdxcrawler.egg-info
+*.egg-info
+.eggs

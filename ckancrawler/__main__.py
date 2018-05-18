@@ -1,9 +1,9 @@
 """Simple command-line demo"""
 
-from . import CKANIterator
+from . import Crawler
 
-iterator = CKANIterator()
+crawler = Crawler()
 
 print("Demo: all packages from demo.ckan.org matching 'demo'")
-for package in iterator.packages(q='demo'):
+for package in crawler.packages(q='demo'):
     print("  " + package['name'])

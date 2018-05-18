@@ -1,6 +1,8 @@
-import ckanapi, time
+import ckanapi, logging, time
 
-class CKANIterator:
+logger = logging.getLogger(__name__)
+
+class Crawler:
 
     CHUNK_SIZE=100
     """Number of dataset records to read at once"""
@@ -20,22 +22,24 @@ class CKANIterator:
 
     def packages(self, q=None, fq=None, sort=None):
         """Execute a query against HDX, and yield a result for each matching package.
+        The result is usable as an iterator (e.g. in a foreach loop).
         Pauses for \L{delay} after each operation.
         @param q: a CKAN search query (e.g. "population")
         @param fq: a CKAN filter query (e.g. "tags:hxl")
         @param sort: a CKAN sort specification (e.g. "relevance asc, metadata_modified desc")
+        @returns:a generator (like an iterator) that will return each matching package
         """
-        start = 0
+        start_pos = 0
         while True:
-            result = self.ckan.action.package_search(q=q, fq=fq, sort=sort, start=start, rows=CKANIterator.CHUNK_SIZE)
+            result = self.ckan.action.package_search(q=q, fq=fq, sort=sort, start=start_pos, rows=Crawler.CHUNK_SIZE)
             result_count = len(result['results'])
+            logger.debug('Read %d results', result_count)
             if result_count <= 0:
                 break
             # iterate through the results
             for package in result['results']:
+                logger.debug('Yielding package %s', package['name'])
                 yield package
                 time.sleep(self.delay)
-            start += result_count
+            start_pos += result_count
 
-    def update_package(self, package):
-        self.ckan.call_action('package_update', package)
